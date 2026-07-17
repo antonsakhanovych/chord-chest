@@ -1,11 +1,18 @@
 <script lang="ts">
+  import { createSongSearch } from '$lib/songs/search';
+
   let { data } = $props();
+  let query = $state('');
+  const fuse = createSongSearch(data.songs);
+  const results = $derived(query.trim() === '' ? data.songs : fuse.search(query).map((r) => r.item));
 </script>
 
 <h1>Chord Chest</h1>
 
+<input type="search" placeholder="Search songs or artists…" bind:value={query} />
+
 <ul class="song-list">
-  {#each data.songs as song (song.slug)}
+  {#each results as song (song.slug)}
     <li>
       <a href={`/songs/${song.slug}`}>
         <span class="title">{song.title}</span>

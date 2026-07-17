@@ -25,6 +25,7 @@
 		"vitest": "^4.1.8"
 	},
 	"dependencies": {
-		"chordsheetjs": "^15.5.2"
+		"chordsheetjs": "^15.5.2",
+		"fuse.js": "^7.5.0"
 	}
 }
