@@ -25,6 +25,7 @@
 		"vitest": "^4.1.8"
 	},
 	"dependencies": {
+		"@tombatossals/chords-db": "^0.5.1",
 		"chordsheetjs": "^15.5.2",
 		"fuse.js": "^7.5.0"
 	}
