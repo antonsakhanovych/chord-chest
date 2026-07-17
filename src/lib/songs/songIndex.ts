@@ -15,7 +15,7 @@ export function buildIndex(files: Record<string, string>): SongMeta[] {
       return {
         slug,
         title: song.title || slug,
-        artist: song.artist || '',
+        artist: Array.isArray(song.artist) ? song.artist.join(', ') : song.artist || '',
         imageFilename
       };
     })
