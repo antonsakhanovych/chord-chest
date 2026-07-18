@@ -2,7 +2,7 @@ import type { Song } from 'chordsheetjs';
 import { toPdfDocDefinition } from './toPdfDocDefinition';
 import { extractChords } from '$lib/songs/extractChords';
 import { chordDiagramToPng } from './chordDiagramImage';
-import { vfs, fonts } from './vfsFonts';
+import { loadVfs, fonts } from './vfsFonts';
 
 let fontsRegistered = false;
 
@@ -17,6 +17,7 @@ async function ensurePdfMake() {
   if (!fontsRegistered) {
     // pdfmake 0.3.x has no settable `vfs` property — createPdf() reads from an internal
     // `virtualfs` populated via addFontContainer()/addVirtualFileSystem(), not a `vfs` field.
+    const vfs = await loadVfs();
     (pdfMake as unknown as { addFontContainer: (container: { vfs: typeof vfs; fonts: typeof fonts }) => void }).addFontContainer({
       vfs,
       fonts
