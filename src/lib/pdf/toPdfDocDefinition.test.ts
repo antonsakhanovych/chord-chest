@@ -9,15 +9,24 @@ La [Am]la [C]la
 `;
 
 describe('toPdfDocDefinition', () => {
-	it('places the chord line above the lyric line at matching character offsets', () => {
+	it('positions each chord as a spacer column sized to its character offset', () => {
 		const song = new ChordProParser().parse(FIXTURE);
 		const doc = toPdfDocDefinition(song);
 		const stackNode = (doc.content as unknown as Array<Record<string, unknown>>).find(
 			(node) => 'stack' in node
-		) as { stack: Array<{ text: string }> };
-		const [chordNode, lyricNode] = stackNode.stack;
+		) as {
+			stack: [{ columns: Array<{ text: string; width?: number | string }> }, { text: string }];
+		};
+		const [chordRow, lyricNode] = stackNode.stack;
 
-		expect(chordNode.text.indexOf('Am')).toBe(3); // 'La ' is 3 chars
+		// 'La ' is 3 chars before 'Am', then 'la ' is 3 more chars before 'C' (2 already consumed by 'Am').
+		const CHAR_WIDTH = 11 * 0.6;
+		expect(chordRow.columns).toEqual([
+			{ text: '', width: 3 * CHAR_WIDTH },
+			expect.objectContaining({ text: 'Am' }),
+			{ text: '', width: 1 * CHAR_WIDTH },
+			expect.objectContaining({ text: 'C' })
+		]);
 		expect(lyricNode.text).toBe('La la la');
 	});
 

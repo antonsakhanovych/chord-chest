@@ -1,5 +1,5 @@
 import { ChordLyricsPair, Tag, type Line, type Song } from 'chordsheetjs';
-import type { Content, ContextPageSize, TDocumentDefinitions } from 'pdfmake/interfaces';
+import type { Column, Content, ContextPageSize, TDocumentDefinitions } from 'pdfmake/interfaces';
 import { normalizeArtist } from '../songs/normalizeArtist';
 
 // The chord/lyric alignment technique relies on both lines sharing the exact same monospace
@@ -9,6 +9,10 @@ import { normalizeArtist } from '../songs/normalizeArtist';
 // character). Both lines must use this one shared size; visual distinction between them comes
 // from weight/color, not size.
 const GRID_FONT_SIZE = 11;
+
+// Roboto Mono's advance width is a fixed 600/1000 em, confirmed by direct measurement of real
+// generated PDF output (6.601pt character width at 11pt font size = 0.6001 ratio).
+const MONO_CHAR_WIDTH_RATIO = 0.6;
 
 const COLOR_PAPER = '#e6dcc3';
 const COLOR_INK = '#2a2420';
@@ -25,28 +29,51 @@ function sectionHeadingText(line: Line): string | null {
 	return null;
 }
 
-function buildChordLyricLines(line: Line): { chordLine: string; lyricLine: string } | null {
+function buildLyricLine(line: Line): string {
 	const pairs = line.items.filter(
 		(item): item is ChordLyricsPair => item instanceof ChordLyricsPair
 	);
-	if (pairs.length === 0) return null;
+	return pairs.map((pair) => pair.lyrics ?? '').join('');
+}
 
-	let lyricLine = '';
-	let chordLine = '';
+// Builds the chord row as explicit numeric-width spacer columns instead of space-padded text.
+// pdfmake trims leading/trailing whitespace from a text node before layout — confirmed
+// empirically that this collapses ANY whitespace character, including non-breaking spaces
+// (ECMAScript's \s, which pdfmake's trimming appears to rely on, includes U+00A0). Column
+// widths are pure layout arithmetic, not text content, so they aren't subject to that trimming
+// at all — the same technique already used for the chord-diagram row layout below.
+function buildChordRowColumns(line: Line, colorChord: string): Column[] | null {
+	const pairs = line.items.filter(
+		(item): item is ChordLyricsPair => item instanceof ChordLyricsPair
+	);
+	const charWidth = GRID_FONT_SIZE * MONO_CHAR_WIDTH_RATIO;
+
+	const columns: Column[] = [];
+	let lyricCharsSoFar = 0;
+	let columnCursorChars = 0;
 
 	for (const pair of pairs) {
-		const anchor = lyricLine.length;
-		lyricLine += pair.lyrics ?? '';
+		const anchor = lyricCharsSoFar;
+		lyricCharsSoFar += (pair.lyrics ?? '').length;
+		if (!pair.chords) continue;
 
-		if (pair.chords) {
-			chordLine =
-				chordLine.length > anchor
-					? chordLine + pair.chords
-					: chordLine.padEnd(anchor, ' ') + pair.chords;
+		const gapChars = anchor - columnCursorChars;
+		if (gapChars > 0) {
+			columns.push({ text: '', width: gapChars * charWidth });
+			columnCursorChars += gapChars;
 		}
+		columns.push({
+			text: pair.chords,
+			width: 'auto',
+			font: 'Mono',
+			fontSize: GRID_FONT_SIZE,
+			bold: true,
+			color: colorChord
+		});
+		columnCursorChars += pair.chords.length;
 	}
 
-	return { chordLine, lyricLine };
+	return columns.length > 0 ? columns : null;
 }
 
 export function toPdfDocDefinition(song: Song, theme: PdfTheme = 'styled'): TDocumentDefinitions {
@@ -88,19 +115,21 @@ export function toPdfDocDefinition(song: Song, theme: PdfTheme = 'styled'): TDoc
 				continue;
 			}
 
-			const rendered = buildChordLyricLines(line);
-			if (!rendered) continue;
+			const pairs = line.items.filter(
+				(item): item is ChordLyricsPair => item instanceof ChordLyricsPair
+			);
+			if (pairs.length === 0) continue;
+
+			const chordColumns = buildChordRowColumns(line, colorChord);
+			const lyricLine = buildLyricLine(line);
 
 			content.push({
 				stack: [
+					chordColumns
+						? { columns: chordColumns, columnGap: 0 }
+						: { text: ' ', font: 'Mono', fontSize: GRID_FONT_SIZE },
 					{
-						text: rendered.chordLine || ' ',
-						font: 'Mono',
-						fontSize: GRID_FONT_SIZE,
-						color: colorChord
-					},
-					{
-						text: rendered.lyricLine,
+						text: lyricLine,
 						font: 'Mono',
 						fontSize: GRID_FONT_SIZE,
 						color: colorText,
