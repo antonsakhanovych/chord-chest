@@ -1,9 +1,11 @@
 import robotoMonoUrl from '@expo-google-fonts/roboto-mono/400Regular/RobotoMono_400Regular.ttf?url';
+import robotoMonoBoldUrl from '@expo-google-fonts/roboto-mono/700Bold/RobotoMono_700Bold.ttf?url';
 import notoSerifRegularUrl from '@expo-google-fonts/noto-serif/400Regular/NotoSerif_400Regular.ttf?url';
 import notoSerifItalicUrl from '@expo-google-fonts/noto-serif/400Regular_Italic/NotoSerif_400Regular_Italic.ttf?url';
 
 const FONT_URLS: Record<string, string> = {
 	'RobotoMono-Regular.ttf': robotoMonoUrl,
+	'RobotoMono-Bold.ttf': robotoMonoBoldUrl,
 	'Body-Regular.ttf': notoSerifRegularUrl,
 	'Body-Italic.ttf': notoSerifItalicUrl
 };
@@ -11,9 +13,9 @@ const FONT_URLS: Record<string, string> = {
 export const fonts = {
 	Mono: {
 		normal: 'RobotoMono-Regular.ttf',
-		bold: 'RobotoMono-Regular.ttf',
+		bold: 'RobotoMono-Bold.ttf',
 		italics: 'RobotoMono-Regular.ttf',
-		bolditalics: 'RobotoMono-Regular.ttf'
+		bolditalics: 'RobotoMono-Bold.ttf'
 	},
 	Body: {
 		normal: 'Body-Regular.ttf',

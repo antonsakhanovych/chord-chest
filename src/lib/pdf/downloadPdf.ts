@@ -46,6 +46,7 @@ export async function downloadSongPdf(
 	const docDefinition = toPdfDocDefinition(song, theme);
 
 	const diagramColor = theme === 'print' ? '#000000' : '#2a2420';
+	const borderColor = theme === 'print' ? '#999999' : '#5c5242';
 	const chordNames = extractChords(song);
 	const images = await Promise.all(chordNames.map((name) => chordDiagramToPng(name, diagramColor)));
 	const diagramImages = images.filter((img): img is string => !!img);
@@ -57,14 +58,28 @@ export async function downloadSongPdf(
 			margin: [0, 16, 0, 6],
 			font: 'Mono'
 		});
-		const DIAGRAM_WIDTH = 110;
+		const DIAGRAM_WIDTH = 100;
 		const DIAGRAMS_PER_ROW = 4;
 		for (let i = 0; i < diagramImages.length; i += DIAGRAMS_PER_ROW) {
 			const row = diagramImages.slice(i, i + DIAGRAMS_PER_ROW);
 			(docDefinition.content as unknown[]).push({
-				columns: row.map((img) => ({ image: img, width: DIAGRAM_WIDTH })),
+				columns: row.map((img) => ({
+					table: {
+						body: [[{ image: img, width: DIAGRAM_WIDTH, border: [true, true, true, true] }]]
+					},
+					layout: {
+						hLineColor: () => borderColor,
+						vLineColor: () => borderColor,
+						hLineWidth: () => 0.75,
+						vLineWidth: () => 0.75,
+						paddingLeft: () => 6,
+						paddingRight: () => 6,
+						paddingTop: () => 6,
+						paddingBottom: () => 6
+					}
+				})),
 				columnGap: 10,
-				margin: [0, 0, 0, 8]
+				margin: [0, 0, 0, 10]
 			});
 		}
 	}

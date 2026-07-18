@@ -109,8 +109,9 @@ export function toPdfDocDefinition(song: Song, theme: PdfTheme = 'styled'): TDoc
 					text: heading,
 					bold: true,
 					font: 'Mono',
+					fontSize: GRID_FONT_SIZE + 2,
 					color: colorText,
-					margin: [0, 10, 0, 4]
+					margin: [0, 14, 0, 6]
 				});
 				continue;
 			}
