@@ -8,11 +8,34 @@
 	const results = $derived(
 		query.trim() === '' ? data.songs : fuse.search(query).map((r) => r.item)
 	);
+
+	const DESCRIPTION =
+		"Anton Sakhanovych's personal songbook. Chords and lyrics with live transposition, fretboard diagrams, and print-ready PDF export.";
 </script>
+
+<svelte:head>
+	<title>Chord Chest</title>
+	<meta name="description" content={DESCRIPTION} />
+</svelte:head>
 
 <div class="min-h-screen bg-paper text-ink">
 	<div class="mx-auto max-w-2xl px-4 py-8 sm:px-6">
 		<h1 class="font-display text-2xl font-bold tracking-tight sm:text-3xl">Chord Chest</h1>
+		<p class="mt-1 font-body text-sm text-ink-faint italic">
+			Anton Sakhanovych's personal songbook
+		</p>
+		<nav class="mt-2 flex gap-4 font-body text-sm">
+			<a
+				href="https://www.antonsakhanovych.com"
+				class="text-ink-faint underline decoration-ink-faint/50 underline-offset-2 hover:text-mark hover:decoration-mark"
+				>antonsakhanovych.com</a
+			>
+			<a
+				href="https://github.com/antonsakhanovych/chord-chest"
+				class="text-ink-faint underline decoration-ink-faint/50 underline-offset-2 hover:text-mark hover:decoration-mark"
+				>GitHub</a
+			>
+		</nav>
 
 		<label class="mt-6 block">
 			<span class="font-body text-sm text-ink-faint italic">search songs or artists</span>

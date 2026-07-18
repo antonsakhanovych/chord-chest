@@ -16,6 +16,15 @@
 	let downloading = $state(false);
 	let pdfTheme: PdfTheme = $state('styled');
 
+	const pageTitle = $derived(
+		data.song.artist
+			? `${data.song.title} · ${normalizeArtist(data.song.artist)} | Chord Chest`
+			: `${data.song.title} | Chord Chest`
+	);
+	const pageDescription = $derived(
+		`Chords and lyrics for "${data.song.title}"${data.song.artist ? ` by ${normalizeArtist(data.song.artist)}` : ''}. Transpose live, view fretboard diagrams, download a print-ready PDF.`
+	);
+
 	async function handleDownload() {
 		downloading = true;
 		try {
@@ -25,6 +34,11 @@
 		}
 	}
 </script>
+
+<svelte:head>
+	<title>{pageTitle}</title>
+	<meta name="description" content={pageDescription} />
+</svelte:head>
 
 <div class="min-h-screen bg-paper text-ink">
 	<div class="mx-auto max-w-2xl px-4 py-8 sm:px-6">
