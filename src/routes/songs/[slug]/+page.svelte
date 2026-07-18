@@ -1,10 +1,13 @@
 <script lang="ts">
   import Song from '$lib/components/Song.svelte';
   import TransposeControl from '$lib/components/TransposeControl.svelte';
+  import ChordDiagramPanel from '$lib/components/ChordDiagramPanel.svelte';
+  import { extractChords } from '$lib/songs/extractChords';
 
   let { data } = $props();
   let semitones = $state(0);
   const transposedSong = $derived(data.song.transpose(semitones));
+  const chordsUsed = $derived(extractChords(transposedSong));
 </script>
 
 {#if data.imageFilename}
@@ -17,5 +20,7 @@
 {/if}
 
 <TransposeControl {semitones} onChange={(n) => (semitones = n)} />
+
+<ChordDiagramPanel chords={chordsUsed} />
 
 <Song song={transposedSong} />
