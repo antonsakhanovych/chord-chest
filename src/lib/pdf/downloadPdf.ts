@@ -1,5 +1,5 @@
 import type { Song } from 'chordsheetjs';
-import { toPdfDocDefinition } from './toPdfDocDefinition';
+import { toPdfDocDefinition, type PdfTheme } from './toPdfDocDefinition';
 import { extractChords } from '$lib/songs/extractChords';
 import { chordDiagramToPng } from './chordDiagramImage';
 import { loadVfs, fonts } from './vfsFonts';
@@ -30,12 +30,13 @@ async function ensurePdfMake() {
   };
 }
 
-export async function downloadSongPdf(song: Song, filenameSlug: string): Promise<void> {
+export async function downloadSongPdf(song: Song, filenameSlug: string, theme: PdfTheme = 'styled'): Promise<void> {
   const pdfMake = await ensurePdfMake();
-  const docDefinition = toPdfDocDefinition(song);
+  const docDefinition = toPdfDocDefinition(song, theme);
 
+  const diagramColor = theme === 'print' ? '#000000' : '#2a2420';
   const chordNames = extractChords(song);
-  const images = await Promise.all(chordNames.map((name) => chordDiagramToPng(name, '#2a2420')));
+  const images = await Promise.all(chordNames.map((name) => chordDiagramToPng(name, diagramColor)));
   const diagramImages = images.filter((img): img is string => !!img);
 
   if (diagramImages.length > 0) {
@@ -52,5 +53,5 @@ export async function downloadSongPdf(song: Song, filenameSlug: string): Promise
     }
   }
 
-  await pdfMake.createPdf(docDefinition).download(`${filenameSlug}.pdf`);
+  await pdfMake.createPdf(docDefinition).download(`${filenameSlug}-${theme}.pdf`);
 }

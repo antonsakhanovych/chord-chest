@@ -3,6 +3,7 @@
 	import TransposeControl from '$lib/components/TransposeControl.svelte';
 	import ChordDiagramPanel from '$lib/components/ChordDiagramPanel.svelte';
 	import { downloadSongPdf } from '$lib/pdf/downloadPdf';
+	import type { PdfTheme } from '$lib/pdf/toPdfDocDefinition';
 	import { extractChords } from '$lib/songs/extractChords';
 	import { normalizeArtist } from '$lib/songs/normalizeArtist';
 
@@ -12,11 +13,12 @@
 	const chordsUsed = $derived(extractChords(transposedSong));
 
 	let downloading = $state(false);
+	let pdfTheme: PdfTheme = $state('styled');
 
 	async function handleDownload() {
 		downloading = true;
 		try {
-			await downloadSongPdf(transposedSong, data.slug);
+			await downloadSongPdf(transposedSong, data.slug, pdfTheme);
 		} finally {
 			downloading = false;
 		}
@@ -54,12 +56,24 @@
 			<ChordDiagramPanel chords={chordsUsed} />
 		</div>
 
-		<button
-			onclick={handleDownload}
-			disabled={downloading}
-			class="font-display mt-6 rounded-sm bg-mark px-4 py-2 font-bold text-paper transition-colors hover:bg-mark-soft focus:ring-2 focus:ring-mark focus:outline-none disabled:opacity-60"
-		>
-			{downloading ? 'Generating PDF…' : 'Download PDF'}
-		</button>
+		<div class="mt-6 flex flex-wrap items-center gap-2">
+			<label class="flex items-center gap-2">
+				<span class="font-body text-sm text-ink-faint">PDF style:</span>
+				<select
+					bind:value={pdfTheme}
+					class="rounded-sm border border-ink-faint bg-paper-dark px-2 py-2 font-body text-sm text-ink focus:ring-2 focus:ring-mark focus:outline-none"
+				>
+					<option value="styled">Styled</option>
+					<option value="print">Print-friendly (black &amp; white)</option>
+				</select>
+			</label>
+			<button
+				onclick={handleDownload}
+				disabled={downloading}
+				class="font-display rounded-sm bg-mark px-4 py-2 font-bold text-paper transition-colors hover:bg-mark-soft focus:ring-2 focus:ring-mark focus:outline-none disabled:opacity-60"
+			>
+				{downloading ? 'Generating PDF…' : 'Download PDF'}
+			</button>
+		</div>
 	</div>
 </div>
