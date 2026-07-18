@@ -6,6 +6,7 @@
 	import type { PdfTheme } from '$lib/pdf/toPdfDocDefinition';
 	import { extractChords } from '$lib/songs/extractChords';
 	import { normalizeArtist } from '$lib/songs/normalizeArtist';
+	import { resolve } from '$app/paths';
 
 	let { data } = $props();
 	let semitones = $state(0);
@@ -27,7 +28,7 @@
 
 <div class="min-h-screen bg-paper text-ink">
 	<div class="mx-auto max-w-2xl px-4 py-8 sm:px-6">
-		<a href="/" class="font-body text-sm text-ink-faint hover:text-mark">&larr; Chord Chest</a>
+		<a href={resolve('/')} class="font-body text-sm text-ink-faint hover:text-mark">&larr; Chord Chest</a>
 
 		<header class="relative mt-4 rounded-sm bg-paper-dark px-5 py-4 shadow-sm">
 			<span class="absolute top-2 bottom-2 left-0 w-1.5 rounded-r-sm bg-mark" aria-hidden="true"></span>

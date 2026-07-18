@@ -15,16 +15,17 @@
 </script>
 
 <div class="font-display text-ink overflow-x-auto">
-	{#each song.paragraphs as paragraph}
-		{#each paragraph.lines as line}
+	{#each song.paragraphs as paragraph, paragraphIndex (paragraphIndex)}
+		{#each paragraph.lines as line, lineIndex (lineIndex)}
 			{#if line.items.length === 1 && line.items[0] instanceof Tag && line.items[0].name === 'comment'}
 				<h3 class="mt-4 mb-1 text-sm font-bold tracking-wide text-ink-faint uppercase">{line.items[0].value}</h3>
 			{:else if line.items.length > 0}
 				<p class="mt-6 mb-0.5 border-b border-ink-faint/25 pb-1 leading-[1.7em]">
-					{#each line.items as item}
+					{#each line.items as item, itemIndex (itemIndex)}
 						{#if item instanceof ChordLyricsPair}
 							<span class="relative inline-block">
 								{#if item.chords}<span class="absolute -top-[1.1em] left-0 text-[0.85em] font-bold text-mark">{item.chords}</span>{/if}
+								<!-- eslint-disable-next-line svelte/no-at-html-tags -- escapeLyricHtml escapes &, <, > before substituting only &laquo;/&raquo; entities, so this is not an XSS vector -->
 								<span class="whitespace-pre">{@html escapeLyricHtml(item.lyrics ?? '')}</span>
 							</span>
 						{/if}

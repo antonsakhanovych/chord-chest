@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { createSongSearch } from '$lib/songs/search';
+	import { resolve } from '$app/paths';
 
 	let { data } = $props();
 	let query = $state('');
@@ -25,7 +26,7 @@
 			{#each results as song (song.slug)}
 				<li>
 					<a
-						href={`/songs/${song.slug}`}
+						href={resolve('/songs/[slug]', { slug: song.slug })}
 						class="relative block rounded-sm bg-paper-dark py-3 pr-4 pl-5 shadow-sm transition-colors hover:bg-mark-soft/20 focus:ring-2 focus:ring-mark focus:outline-none"
 					>
 						<span class="absolute top-2 bottom-2 left-0 w-1.5 rounded-r-sm bg-mark" aria-hidden="true"></span>

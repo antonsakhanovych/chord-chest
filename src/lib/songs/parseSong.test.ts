@@ -31,7 +31,7 @@ describe('parseSongFile', () => {
     const transposed = song.transpose(2);
     const chordNames = transposed.lines
       .flatMap((l) => l.items)
-      .filter((item): item is ChordLyricsPair => 'chords' in item && typeof (item as any).chords === 'string')
+      .filter((item): item is ChordLyricsPair => 'chords' in item && typeof item.chords === 'string')
       .map((item) => item.chords);
     expect(chordNames).toContain('Bm'); // Am + 2 semitones
   });
