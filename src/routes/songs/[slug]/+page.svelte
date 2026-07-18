@@ -28,10 +28,13 @@
 
 <div class="min-h-screen bg-paper text-ink">
 	<div class="mx-auto max-w-2xl px-4 py-8 sm:px-6">
-		<a href={resolve('/')} class="font-body text-sm text-ink-faint hover:text-mark">&larr; Chord Chest</a>
+		<a href={resolve('/')} class="font-body text-sm text-ink-faint hover:text-mark"
+			>&larr; Chord Chest</a
+		>
 
 		<header class="relative mt-4 rounded-sm bg-paper-dark px-5 py-4 shadow-sm">
-			<span class="absolute top-2 bottom-2 left-0 w-1.5 rounded-r-sm bg-mark" aria-hidden="true"></span>
+			<span class="absolute top-2 bottom-2 left-0 w-1.5 rounded-r-sm bg-mark" aria-hidden="true"
+			></span>
 			{#if data.imageFilename}
 				<img
 					src={`/songs/${data.imageFilename}`}
@@ -71,7 +74,7 @@
 			<button
 				onclick={handleDownload}
 				disabled={downloading}
-				class="font-display rounded-sm bg-mark px-4 py-2 font-bold text-paper transition-colors hover:bg-mark-soft focus:ring-2 focus:ring-mark focus:outline-none disabled:opacity-60"
+				class="rounded-sm bg-mark px-4 py-2 font-display font-bold text-paper transition-colors hover:bg-mark-soft focus:ring-2 focus:ring-mark focus:outline-none disabled:opacity-60"
 			>
 				{downloading ? 'Generating PDF…' : 'Download PDF'}
 			</button>

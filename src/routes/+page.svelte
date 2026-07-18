@@ -5,7 +5,9 @@
 	let { data } = $props();
 	let query = $state('');
 	const fuse = createSongSearch(data.songs);
-	const results = $derived(query.trim() === '' ? data.songs : fuse.search(query).map((r) => r.item));
+	const results = $derived(
+		query.trim() === '' ? data.songs : fuse.search(query).map((r) => r.item)
+	);
 </script>
 
 <div class="min-h-screen bg-paper text-ink">
@@ -29,10 +31,13 @@
 						href={resolve('/songs/[slug]', { slug: song.slug })}
 						class="relative block rounded-sm bg-paper-dark py-3 pr-4 pl-5 shadow-sm transition-colors hover:bg-mark-soft/20 focus:ring-2 focus:ring-mark focus:outline-none"
 					>
-						<span class="absolute top-2 bottom-2 left-0 w-1.5 rounded-r-sm bg-mark" aria-hidden="true"></span>
-						<span class="font-display block font-bold text-ink">{song.title}</span>
+						<span
+							class="absolute top-2 bottom-2 left-0 w-1.5 rounded-r-sm bg-mark"
+							aria-hidden="true"
+						></span>
+						<span class="block font-display font-bold text-ink">{song.title}</span>
 						{#if song.artist}
-							<span class="font-body block text-sm text-ink-faint italic">{song.artist}</span>
+							<span class="block font-body text-sm text-ink-faint italic">{song.artist}</span>
 						{/if}
 					</a>
 				</li>

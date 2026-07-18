@@ -15,14 +15,17 @@
 	<button
 		onclick={() => onChange(Math.max(semitones - 1, MIN))}
 		aria-label="Transpose down"
-		class="font-display flex h-11 w-11 shrink-0 items-center justify-center rounded-sm bg-paper-dark text-lg font-bold text-ink hover:bg-mark-soft/30 focus:ring-2 focus:ring-mark focus:outline-none"
+		class="flex h-11 w-11 shrink-0 items-center justify-center rounded-sm bg-paper-dark font-display text-lg font-bold text-ink hover:bg-mark-soft/30 focus:ring-2 focus:ring-mark focus:outline-none"
 	>
 		&minus;
 	</button>
 
 	<div class="relative h-11 flex-1">
 		<!-- fret track: 6 evenly spaced vertical lines representing frets -->
-		<div class="absolute top-1/2 right-0 left-0 h-0.5 -translate-y-1/2 bg-ink-faint" aria-hidden="true"></div>
+		<div
+			class="absolute top-1/2 right-0 left-0 h-0.5 -translate-y-1/2 bg-ink-faint"
+			aria-hidden="true"
+		></div>
 		{#each POSITIONS as n (n)}
 			<button
 				onclick={() => onChange(n)}
@@ -45,12 +48,12 @@
 	<button
 		onclick={() => onChange(Math.min(semitones + 1, MAX))}
 		aria-label="Transpose up"
-		class="font-display flex h-11 w-11 shrink-0 items-center justify-center rounded-sm bg-paper-dark text-lg font-bold text-ink hover:bg-mark-soft/30 focus:ring-2 focus:ring-mark focus:outline-none"
+		class="flex h-11 w-11 shrink-0 items-center justify-center rounded-sm bg-paper-dark font-display text-lg font-bold text-ink hover:bg-mark-soft/30 focus:ring-2 focus:ring-mark focus:outline-none"
 	>
 		+
 	</button>
 
-	<span class="font-display w-16 shrink-0 text-right text-sm font-bold text-ink">
+	<span class="w-16 shrink-0 text-right font-display text-sm font-bold text-ink">
 		capo: {semitones > 0 ? `+${semitones}` : semitones}
 	</span>
 </div>
