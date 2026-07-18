@@ -18,4 +18,4 @@
   });
 </script>
 
-<div bind:this={container} class="chord-diagram"></div>
+<div bind:this={container} class="chord-diagram inline-block min-w-20 min-h-24 shrink-0"></div>

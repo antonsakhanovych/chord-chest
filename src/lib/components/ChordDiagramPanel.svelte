@@ -1,21 +1,17 @@
 <!-- src/lib/components/ChordDiagramPanel.svelte -->
 <script lang="ts">
-  import ChordDiagram from './ChordDiagram.svelte';
+	import ChordDiagram from './ChordDiagram.svelte';
 
-  let { chords }: { chords: string[] } = $props();
+	let { chords }: { chords: string[] } = $props();
 </script>
 
-<div class="chord-panel">
-  {#each chords as chord (chord)}
-    <ChordDiagram name={chord} />
-  {/each}
-</div>
-
-<style>
-  .chord-panel {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin: 1rem 0;
-  }
-</style>
+{#if chords.length > 0}
+	<div>
+		<h2 class="font-display mb-2 text-sm font-bold tracking-wide text-ink-faint uppercase">Chords used</h2>
+		<div class="flex flex-wrap gap-4">
+			{#each chords as chord (chord)}
+				<ChordDiagram name={chord} />
+			{/each}
+		</div>
+	</div>
+{/if}
