@@ -1,42 +1,31 @@
-# sv
+# Chord Chest
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+A personal songbook: ChordPro lyrics with live chord transposition, fretboard diagrams, fuzzy search, and print-ready PDF export. No server, just static files.
 
-## Creating a project
+**[chords.antonsakhanovych.com →](https://chords.antonsakhanovych.com)**
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Stack
 
-```sh
-# create a new project
-npx sv create my-app
-```
+SvelteKit + TypeScript · [chordsheetjs](https://github.com/martijnversluis/ChordSheetJS) for parsing · [svguitar](https://github.com/omnibrain/svguitar) for diagrams · [pdfmake](https://github.com/bpampuch/pdfmake) for PDF export · Tailwind CSS
 
-To recreate this project with the same configuration:
+## Adding a song
 
-```sh
-# recreate this project
-npx sv@0.16.3 create --template minimal --types ts --add vitest="usages:unit" --install npm .
-```
+Drop a `.cho` file (ChordPro format) into `songs/`. Chords go inline as `[Am]` right before the syllable they belong to; section headers are `{comment: ...}` directives.
 
-## Developing
+## Local development
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```sh
+```bash
+npm install
 npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
 ```
 
-## Building
-
-To create a production version of your app:
-
-```sh
-npm run build
+```bash
+npm run check   # typecheck
+npm run lint    # eslint + prettier
+npm run test    # vitest
+npm run build   # static build to build/
 ```
 
-You can preview the production build with `npm run preview`.
+## Deploy
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+Pushes to `mainline` build and deploy to GitHub Pages automatically via `.github/workflows/build.yml`.
