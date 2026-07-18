@@ -4,6 +4,7 @@
   import ChordDiagramPanel from '$lib/components/ChordDiagramPanel.svelte';
   import { extractChords } from '$lib/songs/extractChords';
   import { downloadSongPdf } from '$lib/pdf/downloadPdf';
+  import { normalizeArtist } from '$lib/songs/normalizeArtist';
 
   let { data } = $props();
   let semitones = $state(0);
@@ -27,7 +28,7 @@
 
 <h1>{data.song.title}</h1>
 {#if data.song.artist}
-  <p class="artist">{data.song.artist}</p>
+  <p class="artist">{normalizeArtist(data.song.artist)}</p>
 {/if}
 
 <TransposeControl {semitones} onChange={(n) => (semitones = n)} />

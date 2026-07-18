@@ -1,5 +1,6 @@
 import { ChordLyricsPair, Tag, type Line, type Song } from 'chordsheetjs';
 import type { Content, TDocumentDefinitions } from 'pdfmake/interfaces';
+import { normalizeArtist } from '../songs/normalizeArtist';
 
 const CHORD_FONT_SIZE = 10;
 const LYRIC_FONT_SIZE = 11;
@@ -33,7 +34,7 @@ function buildChordLyricLines(line: Line): { chordLine: string; lyricLine: strin
 export function toPdfDocDefinition(song: Song): TDocumentDefinitions {
   const content: Content[] = [
     { text: song.title ?? '', fontSize: 20, bold: true, margin: [0, 0, 0, 2] },
-    { text: song.artist ?? '', fontSize: 12, italics: true, margin: [0, 0, 0, 12] }
+    { text: normalizeArtist(song.artist), fontSize: 12, italics: true, margin: [0, 0, 0, 12] }
   ];
 
   for (const paragraph of song.paragraphs) {

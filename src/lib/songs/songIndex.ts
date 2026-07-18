@@ -1,4 +1,5 @@
 import { parseSongFile } from './parseSong';
+import { normalizeArtist } from './normalizeArtist';
 
 export interface SongMeta {
   slug: string;
@@ -15,7 +16,7 @@ export function buildIndex(files: Record<string, string>): SongMeta[] {
       return {
         slug,
         title: song.title || slug,
-        artist: Array.isArray(song.artist) ? song.artist.join(', ') : song.artist || '',
+        artist: normalizeArtist(song.artist),
         imageFilename
       };
     })
