@@ -54,6 +54,6 @@
 	</button>
 
 	<span class="w-16 shrink-0 text-right font-display text-sm font-bold text-ink">
-		capo: {semitones > 0 ? `+${semitones}` : semitones}
+		key: {semitones > 0 ? `+${semitones}` : semitones}
 	</span>
 </div>
