@@ -1,7 +1,11 @@
+import robotoMonoUrl from '@expo-google-fonts/roboto-mono/400Regular/RobotoMono_400Regular.ttf?url';
+import notoSerifRegularUrl from '@expo-google-fonts/noto-serif/400Regular/NotoSerif_400Regular.ttf?url';
+import notoSerifItalicUrl from '@expo-google-fonts/noto-serif/400Regular_Italic/NotoSerif_400Regular_Italic.ttf?url';
+
 const FONT_URLS: Record<string, string> = {
-  'RobotoMono-Regular.ttf': '/fonts/RobotoMono-Regular.ttf',
-  'Body-Regular.ttf': '/fonts/Body-Regular.ttf',
-  'Body-Italic.ttf': '/fonts/Body-Italic.ttf'
+  'RobotoMono-Regular.ttf': robotoMonoUrl,
+  'Body-Regular.ttf': notoSerifRegularUrl,
+  'Body-Italic.ttf': notoSerifItalicUrl
 };
 
 export const fonts = {
