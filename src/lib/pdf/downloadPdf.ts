@@ -58,12 +58,16 @@ export async function downloadSongPdf(
 			margin: [0, 16, 0, 6],
 			font: 'Mono'
 		});
-		const DIAGRAM_WIDTH = 100;
-		const DIAGRAMS_PER_ROW = 4;
+		const DIAGRAM_WIDTH = 75;
+		const DIAGRAMS_PER_ROW = 5;
 		for (let i = 0; i < diagramImages.length; i += DIAGRAMS_PER_ROW) {
 			const row = diagramImages.slice(i, i + DIAGRAMS_PER_ROW);
 			(docDefinition.content as unknown[]).push({
 				columns: row.map((img) => ({
+					// pdfmake treats a column with no `width` as a star column (fills leftover row
+					// space evenly) — confirmed in columnCalculator.js's isStarColumn(). Without this,
+					// a short trailing row stretches its cards apart instead of packing them left.
+					width: 'auto',
 					table: {
 						body: [[{ image: img, width: DIAGRAM_WIDTH, border: [true, true, true, true] }]]
 					},
