@@ -1,42 +1,65 @@
 <script lang="ts">
-  import Song from '$lib/components/Song.svelte';
-  import TransposeControl from '$lib/components/TransposeControl.svelte';
-  import ChordDiagramPanel from '$lib/components/ChordDiagramPanel.svelte';
-  import { extractChords } from '$lib/songs/extractChords';
-  import { downloadSongPdf } from '$lib/pdf/downloadPdf';
-  import { normalizeArtist } from '$lib/songs/normalizeArtist';
+	import Song from '$lib/components/Song.svelte';
+	import TransposeControl from '$lib/components/TransposeControl.svelte';
+	import ChordDiagramPanel from '$lib/components/ChordDiagramPanel.svelte';
+	import { downloadSongPdf } from '$lib/pdf/downloadPdf';
+	import { extractChords } from '$lib/songs/extractChords';
+	import { normalizeArtist } from '$lib/songs/normalizeArtist';
 
-  let { data } = $props();
-  let semitones = $state(0);
-  const transposedSong = $derived(data.song.transpose(semitones));
-  const chordsUsed = $derived(extractChords(transposedSong));
-  let downloading = $state(false);
+	let { data } = $props();
+	let semitones = $state(0);
+	const transposedSong = $derived(data.song.transpose(semitones));
+	const chordsUsed = $derived(extractChords(transposedSong));
 
-  async function handleDownload() {
-    downloading = true;
-    try {
-      await downloadSongPdf(transposedSong, data.slug);
-    } finally {
-      downloading = false;
-    }
-  }
+	let downloading = $state(false);
+
+	async function handleDownload() {
+		downloading = true;
+		try {
+			await downloadSongPdf(transposedSong, data.slug);
+		} finally {
+			downloading = false;
+		}
+	}
 </script>
 
-{#if data.imageFilename}
-  <img src={`/songs/${data.imageFilename}`} alt="" class="header-image" />
-{/if}
+<div class="min-h-screen bg-paper text-ink">
+	<div class="mx-auto max-w-2xl px-4 py-8 sm:px-6">
+		<a href="/" class="font-body text-sm text-ink-faint hover:text-mark">&larr; Chord Chest</a>
 
-<h1>{data.song.title}</h1>
-{#if data.song.artist}
-  <p class="artist">{normalizeArtist(data.song.artist)}</p>
-{/if}
+		<header class="relative mt-4 rounded-sm bg-paper-dark px-5 py-4 shadow-sm">
+			<span class="absolute top-2 bottom-2 left-0 w-1.5 rounded-r-sm bg-mark" aria-hidden="true"></span>
+			{#if data.imageFilename}
+				<img
+					src={`/songs/${data.imageFilename}`}
+					alt=""
+					class="mb-3 h-40 w-full rounded-sm object-cover"
+				/>
+			{/if}
+			<h1 class="font-display text-2xl font-bold sm:text-3xl">{data.song.title}</h1>
+			{#if data.song.artist}
+				<p class="font-body text-ink-faint italic">{normalizeArtist(data.song.artist)}</p>
+			{/if}
+		</header>
 
-<TransposeControl {semitones} onChange={(n) => (semitones = n)} />
+		<div class="mt-4">
+			<TransposeControl {semitones} onChange={(n) => (semitones = n)} />
+		</div>
 
-<ChordDiagramPanel chords={chordsUsed} />
+		<div class="mt-6 rounded-sm bg-paper-dark/40 p-4 sm:p-6">
+			<Song song={transposedSong} />
+		</div>
 
-<button onclick={handleDownload} disabled={downloading}>
-  {downloading ? 'Generating PDF…' : 'Download PDF'}
-</button>
+		<div class="mt-6">
+			<ChordDiagramPanel chords={chordsUsed} />
+		</div>
 
-<Song song={transposedSong} />
+		<button
+			onclick={handleDownload}
+			disabled={downloading}
+			class="font-display mt-6 rounded-sm bg-mark px-4 py-2 font-bold text-paper transition-colors hover:bg-mark-soft focus:ring-2 focus:ring-mark focus:outline-none disabled:opacity-60"
+		>
+			{downloading ? 'Generating PDF…' : 'Download PDF'}
+		</button>
+	</div>
+</div>
