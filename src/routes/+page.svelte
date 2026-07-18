@@ -7,7 +7,7 @@
   const results = $derived(query.trim() === '' ? data.songs : fuse.search(query).map((r) => r.item));
 </script>
 
-<h1>Chord Chest</h1>
+<h1 class="bg-paper text-ink font-display">Chord Chest</h1>
 
 <input type="search" placeholder="Search songs or artists…" bind:value={query} />
 

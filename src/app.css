@@ -1,0 +1,17 @@
+@import 'tailwindcss';
+@import '@fontsource/space-mono/400.css';
+@import '@fontsource/space-mono/700.css';
+@import '@fontsource/fraunces/400.css';
+@import '@fontsource/fraunces/400-italic.css';
+
+@theme {
+	--color-paper: #e6dcc3;
+	--color-paper-dark: #d9cba8;
+	--color-ink: #2a2420;
+	--color-ink-faint: #8a7c64;
+	--color-mark: #9c3123;
+	--color-mark-soft: #d97456;
+
+	--font-display: 'Space Mono', ui-monospace, monospace;
+	--font-body: 'Fraunces', ui-serif, serif;
+}

@@ -26,10 +26,14 @@
 		"vitest": "^4.1.8"
 	},
 	"dependencies": {
+		"@fontsource/fraunces": "^5.2.9",
+		"@fontsource/space-mono": "^5.2.9",
+		"@tailwindcss/vite": "^4.3.3",
 		"@tombatossals/chords-db": "^0.5.1",
 		"chordsheetjs": "^15.5.2",
 		"fuse.js": "^7.5.0",
 		"pdfmake": "^0.3.11",
-		"svguitar": "^2.5.4"
+		"svguitar": "^2.5.4",
+		"tailwindcss": "^4.3.3"
 	}
 }
