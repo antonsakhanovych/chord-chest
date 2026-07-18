@@ -4,7 +4,7 @@
 
 	let { data } = $props();
 	let query = $state('');
-	const fuse = createSongSearch(data.songs);
+	const fuse = $derived(createSongSearch(data.songs));
 	const results = $derived(
 		query.trim() === '' ? data.songs : fuse.search(query).map((r) => r.item)
 	);
