@@ -2,8 +2,13 @@ import { ChordLyricsPair, Tag, type Line, type Song } from 'chordsheetjs';
 import type { Content, ContextPageSize, TDocumentDefinitions } from 'pdfmake/interfaces';
 import { normalizeArtist } from '../songs/normalizeArtist';
 
-const CHORD_FONT_SIZE = 10;
-const LYRIC_FONT_SIZE = 11;
+// The chord/lyric alignment technique relies on both lines sharing the exact same monospace
+// character pitch — a monospace font's advance width scales with font size, so rendering the
+// two lines at different sizes silently breaks column alignment (confirmed empirically: a
+// 10pt/11pt split produced 6.0pt vs 6.6pt character advances, drifting further apart every
+// character). Both lines must use this one shared size; visual distinction between them comes
+// from weight/color, not size.
+const GRID_FONT_SIZE = 11;
 
 const COLOR_PAPER = '#e6dcc3';
 const COLOR_INK = '#2a2420';
@@ -91,13 +96,13 @@ export function toPdfDocDefinition(song: Song, theme: PdfTheme = 'styled'): TDoc
 					{
 						text: rendered.chordLine || ' ',
 						font: 'Mono',
-						fontSize: CHORD_FONT_SIZE,
+						fontSize: GRID_FONT_SIZE,
 						color: colorChord
 					},
 					{
 						text: rendered.lyricLine,
 						font: 'Mono',
-						fontSize: LYRIC_FONT_SIZE,
+						fontSize: GRID_FONT_SIZE,
 						color: colorText,
 						margin: [0, 0, 0, 2]
 					}
