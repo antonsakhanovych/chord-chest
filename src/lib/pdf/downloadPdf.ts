@@ -34,14 +34,21 @@ export async function downloadSongPdf(song: Song, filenameSlug: string): Promise
   const docDefinition = toPdfDocDefinition(song);
 
   const chordNames = extractChords(song);
-  const images = await Promise.all(chordNames.map((name) => chordDiagramToPng(name)));
+  const images = await Promise.all(chordNames.map((name) => chordDiagramToPng(name, '#2a2420')));
   const diagramImages = images.filter((img): img is string => !!img);
 
   if (diagramImages.length > 0) {
-    (docDefinition.content as unknown[]).push(
-      { text: 'Chords used', bold: true, margin: [0, 16, 0, 6], font: 'Mono' },
-      { columns: diagramImages.map((img) => ({ image: img, width: 80 })) }
-    );
+    (docDefinition.content as unknown[]).push({ text: 'Chords used', bold: true, margin: [0, 16, 0, 6], font: 'Mono' });
+    const DIAGRAM_WIDTH = 110;
+    const DIAGRAMS_PER_ROW = 4;
+    for (let i = 0; i < diagramImages.length; i += DIAGRAMS_PER_ROW) {
+      const row = diagramImages.slice(i, i + DIAGRAMS_PER_ROW);
+      (docDefinition.content as unknown[]).push({
+        columns: row.map((img) => ({ image: img, width: DIAGRAM_WIDTH })),
+        columnGap: 10,
+        margin: [0, 0, 0, 8]
+      });
+    }
   }
 
   await pdfMake.createPdf(docDefinition).download(`${filenameSlug}.pdf`);

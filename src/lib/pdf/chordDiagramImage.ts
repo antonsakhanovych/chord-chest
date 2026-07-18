@@ -1,7 +1,7 @@
 // src/lib/pdf/chordDiagramImage.ts
 import { getChordShape } from '$lib/chords/chordShapes';
 
-export async function chordDiagramToPng(name: string): Promise<string | null> {
+export async function chordDiagramToPng(name: string, color = '#2a2420'): Promise<string | null> {
   const shape = getChordShape(name);
   if (!shape) return null;
 
@@ -12,7 +12,7 @@ export async function chordDiagramToPng(name: string): Promise<string | null> {
 
   const { SVGuitarChord } = await import('svguitar');
   new SVGuitarChord(container)
-    .configure({ title: name })
+    .configure({ title: name, color, backgroundColor: 'none' })
     .chord({ fingers: shape.fingers, barres: shape.barres, position: shape.baseFret })
     .draw();
 
@@ -38,8 +38,6 @@ export async function chordDiagramToPng(name: string): Promise<string | null> {
           reject(new Error('Canvas 2D context unavailable'));
           return;
         }
-        ctx.fillStyle = 'white';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(img, 0, 0);
         resolve(canvas.toDataURL('image/png'));
       };
