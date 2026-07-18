@@ -6,7 +6,7 @@
 </script>
 
 <div
-	class="font-display text-ink"
+	class="font-display text-ink overflow-x-auto"
 	style="background-image: repeating-linear-gradient(to bottom, transparent, transparent 1.7em, color-mix(in srgb, var(--color-ink-faint) 25%, transparent) 1.7em, color-mix(in srgb, var(--color-ink-faint) 25%, transparent) calc(1.7em + 1px));"
 >
 	{#each song.paragraphs as paragraph}
