@@ -45,15 +45,40 @@ describe('toPdfDocDefinition', () => {
 		expect(() => toPdfDocDefinition(song)).not.toThrow();
 	});
 
-	it('renders a tab block as a bordered monospace table', () => {
+	it('renders a tab block as a bordered stack of per-line columns', () => {
 		const tabFixture = `{title: T}\n{start_of_tab}\ne|--0--|\nB|--1--|\n{end_of_tab}\n`;
 		const song = new ChordProParser().parse(tabFixture);
 		const doc = toPdfDocDefinition(song);
 		const tabNode = (doc.content as unknown as Array<Record<string, unknown>>).find(
 			(node) => 'table' in node
-		) as { table: { body: [[{ text: string; font: string }]] } };
+		) as {
+			table: { body: [[{ stack: Array<{ columns: Array<{ text: string; font?: string }> }> }]] };
+		};
+		const cell = tabNode.table.body[0][0];
 
-		expect(tabNode.table.body[0][0].text).toBe('e|--0--|\nB|--1--|');
-		expect(tabNode.table.body[0][0].font).toBe('Mono');
+		expect(cell.stack).toHaveLength(2);
+		expect(cell.stack[0].columns.map((c) => c.text).join('')).toBe('e|--0--|');
+		expect(cell.stack[1].columns.map((c) => c.text).join('')).toBe('B|--1--|');
+		expect(cell.stack[0].columns[0].font).toBe('Mono');
+	});
+
+	it('preserves leading whitespace on a tab line as a spacer column, not literal text', () => {
+		const tabFixture = `{title: T}\n{start_of_tab}\n  e|--0--|\n{end_of_tab}\n`;
+		const song = new ChordProParser().parse(tabFixture);
+		const doc = toPdfDocDefinition(song);
+		const tabNode = (doc.content as unknown as Array<Record<string, unknown>>).find(
+			(node) => 'table' in node
+		) as {
+			table: {
+				body: [[{ stack: Array<{ columns: Array<{ text: string; width?: number | string }> }> }]];
+			};
+		};
+		const columns = tabNode.table.body[0][0].stack[0].columns;
+
+		const CHAR_WIDTH = 11 * 0.6;
+		expect(columns).toEqual([
+			{ text: '', width: 2 * CHAR_WIDTH },
+			expect.objectContaining({ text: 'e|--0--|' })
+		]);
 	});
 });

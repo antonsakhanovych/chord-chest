@@ -64,4 +64,11 @@ describe('groupTabLines', () => {
 	it('returns an empty array for no lines', () => {
 		expect(groupTabLines([])).toEqual([]);
 	});
+
+	it('drops a tab run whose lines are all blank', () => {
+		const song = parser.parse('{start_of_tab}\n\n{end_of_tab}');
+		const lines = song.paragraphs[0].lines;
+
+		expect(groupTabLines(lines)).toEqual([]);
+	});
 });

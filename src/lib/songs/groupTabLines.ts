@@ -15,8 +15,10 @@ export function groupTabLines(lines: Line[]): LineRun[] {
 
 	const flushTabBuffer = () => {
 		if (tabBuffer.length === 0) return;
-		runs.push({ kind: 'tab', text: tabBuffer.join('\n') });
+		const text = tabBuffer.join('\n');
 		tabBuffer = [];
+		if (text.trim() === '') return;
+		runs.push({ kind: 'tab', text });
 	};
 
 	for (const line of lines) {

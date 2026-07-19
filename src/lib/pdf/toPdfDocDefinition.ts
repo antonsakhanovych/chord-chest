@@ -79,7 +79,27 @@ function buildChordRowColumns(line: Line, colorChord: string): Column[] | null {
 	return columns.length > 0 ? columns : null;
 }
 
+function buildTabLineColumns(line: string, colorText: string): Column[] {
+	const leadingSpaces = line.match(/^ */)?.[0].length ?? 0;
+	const rest = line.slice(leadingSpaces);
+	const charWidth = GRID_FONT_SIZE * MONO_CHAR_WIDTH_RATIO;
+
+	const columns: Column[] = [];
+	if (leadingSpaces > 0) {
+		columns.push({ text: '', width: leadingSpaces * charWidth });
+	}
+	columns.push({
+		text: rest,
+		width: 'auto',
+		font: 'Mono',
+		fontSize: GRID_FONT_SIZE,
+		color: colorText
+	});
+	return columns;
+}
+
 function buildTabBlock(text: string, colorText: string, colorBorder: string): Content {
+	const lines = text.split('\n');
 	return {
 		margin: [0, 10, 0, 10],
 		table: {
@@ -87,10 +107,10 @@ function buildTabBlock(text: string, colorText: string, colorBorder: string): Co
 			body: [
 				[
 					{
-						text,
-						font: 'Mono',
-						fontSize: GRID_FONT_SIZE,
-						color: colorText,
+						stack: lines.map((line) => ({
+							columns: buildTabLineColumns(line, colorText),
+							columnGap: 0
+						})),
 						border: [true, true, true, true]
 					}
 				]
