@@ -1,6 +1,7 @@
 import { ChordLyricsPair, Tag, type Line, type Song } from 'chordsheetjs';
 import type { Column, Content, ContextPageSize, TDocumentDefinitions } from 'pdfmake/interfaces';
 import { normalizeArtist } from '../songs/normalizeArtist';
+import { groupTabLines } from '../songs/groupTabLines';
 
 // The chord/lyric alignment technique relies on both lines sharing the exact same monospace
 // character pitch — a monospace font's advance width scales with font size, so rendering the
@@ -19,6 +20,8 @@ const COLOR_INK = '#2a2420';
 const COLOR_MARK = '#9c3123';
 const COLOR_WHITE = '#ffffff';
 const COLOR_BLACK = '#000000';
+const COLOR_BORDER_STYLED = '#5c5242';
+const COLOR_BORDER_PRINT = '#999999';
 
 export type PdfTheme = 'styled' | 'print';
 
@@ -76,11 +79,42 @@ function buildChordRowColumns(line: Line, colorChord: string): Column[] | null {
 	return columns.length > 0 ? columns : null;
 }
 
+function buildTabBlock(text: string, colorText: string, colorBorder: string): Content {
+	return {
+		margin: [0, 10, 0, 10],
+		table: {
+			widths: ['*'],
+			body: [
+				[
+					{
+						text,
+						font: 'Mono',
+						fontSize: GRID_FONT_SIZE,
+						color: colorText,
+						border: [true, true, true, true]
+					}
+				]
+			]
+		},
+		layout: {
+			hLineColor: () => colorBorder,
+			vLineColor: () => colorBorder,
+			hLineWidth: () => 0.75,
+			vLineWidth: () => 0.75,
+			paddingLeft: () => 8,
+			paddingRight: () => 8,
+			paddingTop: () => 6,
+			paddingBottom: () => 6
+		}
+	};
+}
+
 export function toPdfDocDefinition(song: Song, theme: PdfTheme = 'styled'): TDocumentDefinitions {
 	const isPrint = theme === 'print';
 	const colorBackground = isPrint ? COLOR_WHITE : COLOR_PAPER;
 	const colorText = isPrint ? COLOR_BLACK : COLOR_INK;
 	const colorChord = isPrint ? COLOR_BLACK : COLOR_MARK;
+	const colorBorder = isPrint ? COLOR_BORDER_PRINT : COLOR_BORDER_STYLED;
 
 	const content: Content[] = [
 		{
@@ -102,7 +136,13 @@ export function toPdfDocDefinition(song: Song, theme: PdfTheme = 'styled'): TDoc
 	];
 
 	for (const paragraph of song.paragraphs) {
-		for (const line of paragraph.lines) {
+		for (const run of groupTabLines(paragraph.lines)) {
+			if (run.kind === 'tab') {
+				content.push(buildTabBlock(run.text, colorText, colorBorder));
+				continue;
+			}
+
+			const line = run.line;
 			const heading = sectionHeadingText(line);
 			if (heading !== null) {
 				content.push({

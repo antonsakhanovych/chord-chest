@@ -44,4 +44,16 @@ describe('toPdfDocDefinition', () => {
 		const song = new ChordProParser().parse(crowded);
 		expect(() => toPdfDocDefinition(song)).not.toThrow();
 	});
+
+	it('renders a tab block as a bordered monospace table', () => {
+		const tabFixture = `{title: T}\n{start_of_tab}\ne|--0--|\nB|--1--|\n{end_of_tab}\n`;
+		const song = new ChordProParser().parse(tabFixture);
+		const doc = toPdfDocDefinition(song);
+		const tabNode = (doc.content as unknown as Array<Record<string, unknown>>).find(
+			(node) => 'table' in node
+		) as { table: { body: [[{ text: string; font: string }]] } };
+
+		expect(tabNode.table.body[0][0].text).toBe('e|--0--|\nB|--1--|');
+		expect(tabNode.table.body[0][0].font).toBe('Mono');
+	});
 });
